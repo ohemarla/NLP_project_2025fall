@@ -1,6 +1,6 @@
 # TextCrawler.py
 # encoding: utf-8
-# 本代码用来获取作业所需要的中英文文本数据，主要是利用Wikipedia的随机词条这一功能，实现语料的收集，最终中英文各爬取10000条词条，保存为jsonl文件，方便后续整理
+# 本代码用来获取作业所需要的中英文文本数据，主要是利用Wikipedia的随机词条这一功能，实现语料的收集，最终中英文各爬取20000条词条，保存为jsonl文件，方便后续整理
 
 import requests
 from bs4 import BeautifulSoup
@@ -24,7 +24,7 @@ class TextCrawler:
     def fetch_random_article(self):
         try:
             headers = {
-                'User-Agent': 'TextCrawler/1.0 (yaoxianglin21@mails.ucas.ac.cn)'
+                'User-Agent': 'TextCrawler/2.0 (yaoxianglin21@mails.ucas.ac.cn)'
             }   # Wikipedia要求请求中包含User-Agent头
             response = requests.get(self.base_url, timeout=10, headers=headers)
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -58,15 +58,9 @@ class TextCrawler:
         count = self.load_existing_data(jsonl_path)   # 从目前已经爬取的jsonl文件中确认已经爬取的词条数量
         with open(jsonl_path, 'a', encoding='utf-8') as f:  #细节，追加模式a，惨痛的教训
             while count < num_articles:
+                print(count)    # 输出当前已经爬取的词条数量
                 article = self.fetch_random_article()
-                if not article:
-                    # fetch 失败（fetch 中已打印错误），等待后重试
-                    time.sleep(1)
-                    continue
                 url = article.get('url')
-                if not url:
-                    time.sleep(1)
-                    continue
                 if url not in self.seen_urls:    # 通过词条的URL来判断是否重复，只要没爬过的
                     self.seen_urls.add(url)
                     f.write(json.dumps(article, ensure_ascii=False) + '\n')
@@ -84,4 +78,4 @@ def crawl_both_languages(num_articles, zh_jsonl, en_jsonl):
     
 if __name__ == "__main__":
     num_articles = 20000  # 每种语言爬取的词条数量，暂时定为20000条
-    crawl_both_languages(num_articles, 'zh_wikipedia.jsonl', 'en_wikipedia.jsonl')
+    crawl_both_languages(num_articles, r'HW1/zh_wikipedia.jsonl', r'HW1/en_wikipedia.jsonl')
