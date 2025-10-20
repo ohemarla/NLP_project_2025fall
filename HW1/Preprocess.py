@@ -14,7 +14,7 @@ class TextPreprocessor:
         if lang == 'zh':
             self.pattern = re.compile(r'[^\u4e00-\u9fa5]')  # 只保留中文字符
         elif lang == 'en':
-            self.pattern = re.compile(r'\b[a-zA-Z]+(?:-[a-zA-Z]+)*\b')  # 删除包含非英文字母字符的单词，一定程度上避免将词条中出现的部分诸如法语、德语等其他语言的单词混入英文单词进行统计，但是也只能把那些单词中含有非英文26个字母的单词给剔除掉
+            self.pattern = re.compile(r'[^A-Za-z\s\-]+')  # 删除包含非英文字母字符的单词，一定程度上避免将词条中出现的部分诸如法语、德语等其他语言的单词混入英文单词进行统计，但是也只能把那些单词中含有非英文26个字母的单词给剔除掉
 
     def clean(self, input_path, output_path):
         cleaned_lines = []  # 用于存储清洗后的文本
