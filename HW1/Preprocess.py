@@ -12,16 +12,16 @@ class TextPreprocessor:
     def __init__(self, lang):
         self.lang = lang
         if lang == 'zh':
-            self.pattern = re.compile(r'[^\u4e00-\u9fa5]')  # 只保留中文字符
+            self.pattern = re.compile(r'[\u4e00-\u9fa5]')  # 选中中文字符以后续进行拼接保留
         elif lang == 'en':
-            self.pattern = re.compile(r'[^A-Za-z\s\-]+')  # 删除包含非英文字母字符的单词，一定程度上避免将词条中出现的部分诸如法语、德语等其他语言的单词混入英文单词进行统计，但是也只能把那些单词中含有非英文26个字母的单词给剔除掉
+            self.pattern = re.compile(r'\b[a-zA-Z]+(?:-[a-zA-Z]+)*\b')  # 选中英文单词（保留连字符）以后续进行拼接保留
 
     def clean(self, input_path, output_path):
         cleaned_lines = []  # 用于存储清洗后的文本
         with open(input_path, 'r', encoding = 'utf-8') as f:
             for line in f:
                 data = json.loads(line) # 一个json一个json地读入
-                clean_text = self.pattern.sub('', data['content'])  # 只对content字段进行清洗
+                clean_text = ' '.join(self.pattern.findall(data['content']))  # 只对content字段进行处理
                 cleaned_lines.append(clean_text)
     
         with open(output_path, 'w', encoding = 'utf-8') as f:
