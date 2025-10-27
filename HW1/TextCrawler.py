@@ -29,7 +29,7 @@ class TextCrawler:
             response = requests.get(self.base_url, timeout=10, headers=headers)
             soup = BeautifulSoup(response.text, 'html.parser')
             title_tag = soup.find('title')  # 通过直接查找title标签来获取该词条的标题
-            title = title_tag.text.strip() if title_tag else ''
+            title = title_tag.text.strip()
             content_div = soup.select_one('#mw-content-text > div.mw-parser-output')    # 经过对维基百科词条网页的分析，发现正文内容都在这个路径下
             paragraphs = content_div.find_all('p')  # 选择在段落中的内容
             content = ''.join([p.get_text().strip() for p in paragraphs])   # 去除一下小段文本前后的一些空白字符，然后拼接起来
