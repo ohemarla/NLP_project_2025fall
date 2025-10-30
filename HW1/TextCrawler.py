@@ -24,13 +24,13 @@ class TextCrawler:
     def fetch_random_article(self):
         try:
             headers = {
-                'User-Agent': 'TextCrawler/2.0 (yaoxianglin21@mails.ucas.ac.cn)'
-            }   # Wikipedia要求请求中包含User-Agent头
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36'
+            }   # 添加User-Agent头
             response = requests.get(self.base_url, timeout=10, headers=headers)
             soup = BeautifulSoup(response.text, 'html.parser')
             title_tag = soup.find('title')  # 通过直接查找title标签来获取该词条的标题
             title = title_tag.text.strip()
-            content_div = soup.select_one('#mw-content-text > div.mw-parser-output')    # 经过对维基百科词条网页的分析，发现正文内容都在这个路径下
+            content_div = soup.select_one('#mw-content-text > div.mw-content-ltr.mw-parser-output')    # 经过对维基百科词条网页的分析，发现正文内容都在这个路径下
             paragraphs = content_div.find_all('p')  # 选择在段落中的内容
             content = ''.join([p.get_text().strip() for p in paragraphs])   # 去除一下小段文本前后的一些空白字符，然后拼接起来
             content = ' '.join(content.split()) if self.lang == 'en' else re.sub(r'\s+', '', content)   # 主要是分情况处理一下，英文需要用空格来分隔单词，中文直接可以把空白字符给去掉

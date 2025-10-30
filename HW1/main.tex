@@ -1,0 +1,104 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper]{geometry}
+\geometry{left=2.0cm,right=2.0cm,top=3cm,bottom=2.5cm}
+\usepackage{setspace}
+\setstretch{1.5}
+\usepackage{ctex}
+\usepackage{amsmath,amsfonts,graphicx,amssymb,bm,amsthm}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+	language=Python,
+	basicstyle=\ttfamily\small,
+	numbers=left,
+	numberstyle=\tiny,
+	showstringspaces=false,
+	breaklines=true,
+	frame=single,    
+	rulecolor=\color{black}, 
+	framerule=0.6pt,     
+	framesep=4pt,     
+	xleftmargin=6pt,     
+	backgroundcolor=\color{gray!5} 
+}
+
+
+\begin{document}
+	\pagestyle{fancy}
+	\lhead{\kaishu 中国科学院大学}
+	\chead{}
+	\rhead{\kaishu 2025年秋季学期\qquad 自然语言处理基础与大模型}
+	
+	\begin{center}
+		{\LARGE \bf 课程作业1-A} 
+	\end{center}
+	\begin{center}
+		\large\kaishu{尧祥临 202518023406038 前沿交叉科学学院}
+	\end{center}
+	
+	\section{任务说明}
+	本报告选择的是课程作业1-A，其主要任务包括：
+	\begin{itemize}
+		\item 收集中英文语料
+		\item 计算在收集样本上英语字母和单词或汉字的概率和熵
+		\item 利用收集的英文文本验证齐夫定律（Zipf’s law）
+		\item 在不同样本量下探究结果差异
+	\end{itemize}
+	
+	\section{语料获取与清洗}
+	\subsection{现代与历史语料获取}
+	\subsubsection{维基百科随机词条爬取}
+	语料获取上，本报告为了统一在同一语言环境获取中英文语料，从而选择了维基百科（Wikipedia）作为爬取的目标，主要思路是利用了维基百科提供的随机词条功能，每次进入随机的百科词条页面之后，获取相应的词条正文内容。分别对中文维基和英文维基使用随机词条功能即可爬取到大量的语料，这样的好处是能确保爬取到的语料可以认为是正式规范的，一定程度上能反应现代英语和现代汉语的特征；但是同样也有一定的缺点，例如受百科这样的体例限制，内容主要是对人物事迹、重要事件经过以及概念的叙述，在主题上有所匮乏。
+	
+	完整的爬取代码如附录7.1所示。
+	
+	对于中文词条，爬虫脚本中访问的URL需要设置为zh.wikipedia确保随机出来的词条是中文词条，同时在最后添加variant=zh-cn确保词条文字是大陆简体；对于英文词条，只需要设置为en.wikipedia即可。经过对多个词条网页源代码的分析，发现维基百科词条的正文内容总出现\#mw-content-text > div.mw-content-ltr.mw-parser-output的路径下，所以这里我选择直接锁定这一路径，在这一路径下再获取所有位于<p>内的段落内容。这样每次爬取到的语料是来自正文而不是词条网页内其余文字内容，从而保证语料是成段落成规模的句子而不是一些杂乱的短语或者重复性的网页引导文字。
+	
+	\begin{lstlisting}[language=Python, label=code2.1]
+if lang == 'zh':
+	self.base_url = "https://zh.wikipedia.org/wiki/Special:Random?variant=zh-cn"    #加上zh-cn确保爬下来的是大陆简体中文
+elif lang == 'en':
+	self.base_url = "https://en.wikipedia.org/wiki/Special:Random"
+	\end{lstlisting}
+	
+	\begin{lstlisting}[language=Python, label=code2.2]
+content_div = soup.select_one('#mw-content-text > div.mw-content-ltr.mw-parser-output')	# 直接定位到该路径
+paragraphs = content_div.find_all('p')
+	\end{lstlisting}
+	
+	对于每一个词条，脚本会分别记录下三个字段，title、content和url。其中title用来记录词条的名称，例如“巴鲣 - 维基百科，自由的百科全书”；url用来记录下该词条的链接，并通过这个来保证记录下来的词条内容不会因为两次随机到了同一个词条而产生重复；最关键的content用来记录正文文本内容，在爬取过程中会在删除文本段落前后可能的空格之后将所有段落直接拼接起来，同时分别对中英文进行不同的处理：中文直接去掉文本中存在的任何空白字符，而英文则将长空格保留为一个从而至少为不同单词之间留下空格做分隔。
+	
+	\begin{lstlisting}[language=Python, label=code2.3]
+content = ''.join([p.get_text().strip() for p in paragraphs]) 
+content = ' '.join(content.split()) if self.lang == 'en' else re.sub(r'\s+', '', content)   # 分情况处理，英文需要用空格来分隔单词，中文直接可以把空白字符给去掉
+	\end{lstlisting}
+	
+	在保存的时候，考虑到这里爬取的语料未来可能另有其他用处，所以并没有直接存储为纯文本的txt格式，而是将title、content和url作为三个字段，把每个词条写成一个json字典，最终全部爬取的文本保存为一个大的jsonl文件。对于中文和英文的语料，均爬取20000条不重复的词条，以保证文本足够充足用来进行统计分析。
+	
+	\subsubsection{历史语料}
+	为了进一步去分析中文和英文在统计上的各种特征，本报告额外获取了一些历史语料，来探究现代汉语与现代英语同古代汉语（文言文）和古英语之间在统计上存在的差异。对于中文的历史语料本报告选择了《史记》，从某种意义上说史记的纪传体同百科的词条有一定的相似之处；对于英文的历史语料，本报告选择了莎士比亚最长的剧本《哈姆雷特》，因莎翁对于英语词汇的极大丰富与拓展。
+
+	\subsection{清洗思路与方法}
+	针对爬取到的中英文各20000条词条，需要对文本内容进行基本的清洗。
+	\section{中文语料分析结果}
+	\section{英文语料分析结果}
+	\subsection{字母}
+	\subsection{单词}
+	\subsection{Zipf定律}
+	\section{语料对比}
+	\section{总结}
+	\section{附录}
+	\subsection{爬虫代码}
+		\begin{lstlisting}[language=Python]
+import numpy
+		\end{lstlisting}
+	\subsection{语料清洗代码}
+		\begin{lstlisting}[language=Python]
+import re
+		\end{lstlisting}
+	
+\end{document}

@@ -5,31 +5,49 @@
 import json
 import re
 
-class TextPreprocessor: 
+class ZhCleaner:
     '''
-    构建一个用于将jsonl文件中每个json中的content字段进行清洗预处理并保存为纯文本的txt文件的类
+    专门用来处理中文文本的清洗类
+    该类会去除所有非中文字符，只保留中文字符
     '''
-    def __init__(self, lang):
-        self.lang = lang
-        if lang == 'zh':
-            self.pattern = re.compile(r'[\u4e00-\u9fa5]')  # 选中中文字符以后续进行拼接保留
-        elif lang == 'en':
-            self.pattern = re.compile(r'\b[a-zA-Z]+(?:-[a-zA-Z]+)*\b')  # 选中英文单词（保留连字符）以后续进行拼接保留
+    def __init__(self):
+        self.pattern = re.compile(r'[^\u4e00-\u9fa5]')  # 选中非中文字符以便后续去除
 
     def clean(self, input_path, output_path):
         cleaned_lines = []  # 用于存储清洗后的文本
         with open(input_path, 'r', encoding = 'utf-8') as f:
             for line in f:
                 data = json.loads(line) # 一个json一个json地读入
-                clean_text = ' '.join(self.pattern.findall(data['content']))  # 只对content字段进行处理
+                clean_text = self.pattern.sub('', data['content'])  # 只对content内容进行处理，匹配到的非中文字符替换为空
+                cleaned_lines.append(clean_text)
+    
+        with open(output_path, 'w', encoding = 'utf-8') as f:
+            f.write("".join(cleaned_lines))
+            
+class EnCleaner:
+    '''
+    专门用来处理英文文本的清洗类
+    该类会去除所有非英文字符，只保留英文字符和空格（确保单词与单词之间还是要划分）
+    '''
+    def __init__(self):
+        self.pattern = re.compile(r'\b[a-zA-Z]+(?:-[a-zA-Z]+)*\b')  # 选中英文单词（保留连字符）以后续进行拼接保留
+
+    def clean(self, input_path, output_path):
+        cleaned_lines = []  # 用于存储清洗后的文本
+        with open(input_path, 'r', encoding = 'utf-8') as f:
+            for line in f:
+                data = json.loads(line) # 一个json一个json地读入
+                clean_text = ' '.join(self.pattern.findall(data['content']))  # 只对content字段进行处理，将匹配到的单词用空格连接起来
+                clean_text = re.sub(r'\s+', ' ', clean_text).strip()  # 去除多余空格
+                clean_text = clean_text.lower()  # 转为小写
                 cleaned_lines.append(clean_text)
     
         with open(output_path, 'w', encoding = 'utf-8') as f:
             f.write("".join(cleaned_lines))
 
 if __name__ == "__main__":
-    zh_preprocessor = TextPreprocessor('zh')
-    zh_preprocessor.clean('HW1/zh_wikipedia.jsonl', 'HW1/zh_wikipedia.txt')
-    
-    en_preprocessor = TextPreprocessor('en')
-    en_preprocessor.clean('HW1/en_wikipedia.jsonl', 'HW1/en_wikipedia.txt')
+    zh_cleaner = ZhCleaner()
+    zh_cleaner.clean('HW1/zh_wikipedia.jsonl', 'HW1/zh_wikipedia.txt')
+
+    en_cleaner = EnCleaner()
+    en_cleaner.clean('HW1/en_wikipedia.jsonl', 'HW1/en_wikipedia.txt')
