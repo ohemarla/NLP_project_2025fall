@@ -1,8 +1,8 @@
 # Fdb version 3
-["pdflatex"] 1761805719 "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.tex" "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.pdf" "main" 1761805719
+["pdflatex"] 1761820296 "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.tex" "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.pdf" "main" 1761820296
   "/System/Library/Fonts/Menlo.ttc" 1731646787 2156036 ec05dfca6821d85440da0899493002c3 ""
-  "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.aux" 1761805719 0 d41d8cd98f00b204e9800998ecf8427e ""
-  "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.tex" 1761805717 6030 88e5dc21347d8559e217a2a90daf2c38 ""
+  "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.aux" 0 -1 0 ""
+  "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.tex" 1761820294 14968 563cbdd899f38a7e4eaa4d3dd805ae09 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
@@ -117,6 +117,7 @@
   "/usr/local/texlive/2021/texmf-dist/tex/latex/base/inputenc.sty" 1601675358 5050 0d3b77275060ca09a40635b830c3c904 ""
   "/usr/local/texlive/2021/texmf-dist/tex/latex/base/size11.clo" 1601675358 8465 2dd6985139dc15bc64ec71e501e76e40 ""
   "/usr/local/texlive/2021/texmf-dist/tex/latex/base/ts1enc.def" 1580683321 7764 996679026d0382957cdad45a528f4fa8 ""
+  "/usr/local/texlive/2021/texmf-dist/tex/latex/booktabs/booktabs.sty" 1579038678 6078 f1cb470c9199e7110a27851508ed7a5c ""
   "/usr/local/texlive/2021/texmf-dist/tex/latex/cjk/texinput/CJK.enc" 1429482942 29591 b3c404288523518719bdabea6811228d ""
   "/usr/local/texlive/2021/texmf-dist/tex/latex/cjk/texinput/CJK.sty" 1429482942 32721 8e131bb8a9a2f3a0ef2f239af995b5af ""
   "/usr/local/texlive/2021/texmf-dist/tex/latex/cjk/texinput/CJKspace.sty" 1429482942 2451 d328ae03103a2e4acfb9d07aaaaab694 ""
@@ -173,11 +174,11 @@
   "/usr/local/texlive/2021/texmf-dist/web2c/texmf.cnf" 1616443989 39972 3d6bb4d9d719e93193fa020b58adf5d4 ""
   "/usr/local/texlive/2021/texmf-var/web2c/pdftex/pdflatex.fmt" 1636275914 2724738 0792a56511c669e3b8f80c66459e0649 ""
   "/usr/local/texlive/2021/texmf.cnf" 1616695596 577 4c1911a7228e554c6032256d3cf5567d ""
-  "main.aux" 1761805719 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "main.tex" 1761805717 6030 88e5dc21347d8559e217a2a90daf2c38 ""
+  "main.aux" 0 -1 0 "pdflatex"
+  "main.tex" 1761820294 14968 563cbdd899f38a7e4eaa4d3dd805ae09 ""
   (generated)
-  "main.pdf"
-  "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.pdf"
-  "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.log"
   "main.aux"
+  "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.pdf"
   "main.log"
+  "main.pdf"
+  "/Users/yaoxianglin/Desktop/自然语言处理/NLP_project_2025fall/HW1/main.log"

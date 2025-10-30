@@ -58,7 +58,7 @@ class TextCrawler:
         count = self.load_existing_data(jsonl_path)   # 从目前已经爬取的jsonl文件中确认已经爬取的词条数量
         with open(jsonl_path, 'a', encoding='utf-8') as f:  #细节，追加模式a，惨痛的教训
             while count < num_articles:
-                print(count)    # 输出当前已经爬取的词条数量
+                #print(count)    # 输出当前已经爬取的词条数量
                 article = self.fetch_random_article()
                 url = article.get('url')
                 if url not in self.seen_urls:    # 通过词条的URL来判断是否重复，只要没爬过的
